@@ -8,18 +8,22 @@ sig Parabrisa{
 --Paleta pode trabalhar em conjunto com Bico ejetor (ou nao). As paletas possuem,
 -- uma velocidade. 
 sig Paleta{
-	bicoEjetor: some BicoEjetor,	
+	bicoEjetor: set BicoEjetor,	
 	limpador: one Velocidade
 }
 
 -- O bico ejetor pode estar ativado ou nao. 
-sig BicoEjetor{}
+sig BicoEjetor{
+	status: one Status
+}
 
-sig Ativado extends BicoEjetor{}
+abstract sig Status {}
 
-sig Desativado extends BicoEjetor{}
+sig Desativado extends Status{}
 
---Velocidade abstract, pois so existe um tipo. 
+sig Ativado extends Status{}
+
+--Velocidade abstract, pois so existe um tipo de velocidade. 
 abstract sig Velocidade{}
 
 sig Desligada extends Velocidade{}
