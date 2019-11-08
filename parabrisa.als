@@ -9,7 +9,7 @@ sig Parabrisa{
 -- uma velocidade. 
 sig Paleta{
 	bicoEjetor: set BicoEjetor,	
-	limpador: one Velocidade
+	velocidade: one Velocidade
 }
 
 -- O bico ejetor pode estar ativado ou nao. 
@@ -31,6 +31,10 @@ sig Desligada extends Velocidade{}
 sig BaixaVelocidade extends Velocidade{}
 
 sig AltaVelocidade extends Velocidade{}
+
+fact{
+	all p:Parabrisa | #p.paletas = 2
+}
 
 pred show[]{}
 
