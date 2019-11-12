@@ -1,4 +1,4 @@
-module Parabrisa
+module ParaBrisa
 
 -- Define um objeto de assinatura Parabrisa, que possui um conjunto de paletas
 sig Parabrisa{
