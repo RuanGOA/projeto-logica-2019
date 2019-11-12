@@ -1,4 +1,4 @@
-module ParaBrisa
+module Parabrisa
 
 -- Define um objeto de assinatura Parabrisa, que possui um conjunto de paletas
 sig Parabrisa{
@@ -108,11 +108,11 @@ assert TodaPaletaTemVelocidadeIgual{
 check TodaPaletaTemVelocidadeIgual for 5
 
 -- Afirma que todo Bico Ejetor tem o mesmo status.
-assert TodoBicoTemEstadoIgual{
+assert TodoBicoTemStatusIgual{
 	all a,b:BicoEjetor | a.status = b.status
 }
 -- Verifica se todo Bico Ejetor tem o mesmo status, em 5 escopos.
-check TodoBicoTemEstadoIgual for 5
+check TodoBicoTemStatusIgual for 5
 
 pred show[]{}
 
