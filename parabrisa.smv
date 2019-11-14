@@ -1,0 +1,38 @@
+MODULE main
+   VAR
+      processo : process parabrisa(chuva, paleta, ejetor);
+      chuva : {desligada, fraca, forte}; 
+      paleta : {desligada, lenta, rapida};
+      ejetores : {ligados, desligados};
+
+   ASSIGN
+      init(paleta) := {desligada};
+      init(chuva) := {desligada};
+      init(ejetores) := {desligados};
+
+MODULE estados(chuva, paleta, ejetor)
+   ASSING
+      next(chuva) :=
+         case
+            chuva = forte : {desligada, fraca};
+            chuva = fraca : {desligada, forte};
+            chuva = desligada : {desligada, forte, fraca};
+         esac
+
+
+
+
+
+
+
+
+-- [] certificacoes(pEx.: nunca a paleta vai estar desligada na chuva)
+-- [] definir estados paletas e ejetor(pEx.: )
+--       ejetor e chuva influenciam nas paletas, mas nao o inverso
+
+
+-- chuva desligada -> paletas desligadas
+-- chuva fraca -> paletas lentas
+-- chuva forte -> paletas rapidas
+-- 1~4 ejetores, quando um liga, o resto liga
+-- ejetores ligados, paleta lenta
