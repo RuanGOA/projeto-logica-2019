@@ -1,0 +1,34 @@
+MODULE main
+   VAR
+      processo : process parabrisa(chuva, paleta, ejetor);
+      chuva : {desligada, fraca, forte}; 
+      paleta : {desligada, lenta, rapida};
+      ejetores : {ligados, desligados};
+
+   ASSIGN
+      init(paleta) := {desligada};
+      init(chuva) := {desligada};
+      init(ejetores) := {desligados};
+
+MODULE estados(chuva, paleta, ejetor)
+   ASSING
+      next(chuva) :=
+         case
+            chuva = forte : {desligada, fraca};
+            chuva = fraca : {desligada, forte};
+            chuva = desligada : {desligada, forte, fraca};
+         esac
+
+
+
+
+
+
+
+
+
+-- chuva desligada -> ejetor desligado e paletas desligadas
+-- chuva fraca -> ejetor ligado e paletas lentas
+-- chuva forte -> ejetor ligado e paletas rapidas
+-- 1~4 ejetores, quando um liga, o resto liga
+-- ejetores ligados, paleta lenta
