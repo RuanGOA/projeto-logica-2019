@@ -26,9 +26,13 @@ MODULE estados(chuva, paleta, ejetor)
 
 
 
+-- [] certificacoes(pEx.: nunca a paleta vai estar desligada na chuva)
+-- [] definir estados paletas e ejetor(pEx.: )
+--       ejetor e chuva influenciam nas paletas, mas nao o inverso
 
--- chuva desligada -> ejetor desligado e paletas desligadas
--- chuva fraca -> ejetor ligado e paletas lentas
--- chuva forte -> ejetor ligado e paletas rapidas
+
+-- chuva desligada -> paletas desligadas
+-- chuva fraca -> paletas lentas
+-- chuva forte -> paletas rapidas
 -- 1~4 ejetores, quando um liga, o resto liga
 -- ejetores ligados, paleta lenta
