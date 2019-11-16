@@ -1,23 +1,32 @@
 MODULE main
    VAR
-      processo : process parabrisa(chuva, paleta, ejetor);
-      chuva : {desligada, fraca, forte}; 
-      paleta : {desligada, lenta, rapida};
+      chuva : {desativada, fraca, forte}; 
+      paletas : {desligadas, lentas, rapidas};
       ejetores : {ligados, desligados};
 
    ASSIGN
-      init(paleta) := {desligada};
-      init(chuva) := {desligada};
-      init(ejetores) := {desligados};
+      init(paletas) := desligadas;
+      init(ejetores) := desligados;
+      init(chuva) := desativada;
 
+   -- AUTOMATIZACAO
+   -- F = Sera verdade no futuro(future)
+   -- LTL = Trata o "tableau" da certificacao
+   -- Se as paletas estiverem desligadas ou lentas, e a chuva estiver forte, as paletas passam para rapidas
+   LTLSPEC F ((paletas = desligadas | paletas = lentas) & chuva = forte -> paletas = rapidas);
+
+   -- Se as paletas estiverem desligadas ou rapidas, e a chuva estiver fraca, as paletas passam para lentas
+   LTLSPEC F ((paletas = desligadas | paletas = rapidas) & chuva = fraca -> paletas = lentas);
+   -- ...
+   
 MODULE estados(chuva, paleta, ejetor)
    ASSING
       next(chuva) :=
          case
-            chuva = forte : {desligada, fraca};
-            chuva = fraca : {desligada, forte};
-            chuva = desligada : {desligada, forte, fraca};
-         esac
+            chuva = forte : {desativada, fraca};
+            chuva = fraca : {desativada, forte};
+            chuva = desativada : {desativada, forte, fraca};
+         esac;
 
 
 
@@ -25,14 +34,16 @@ MODULE estados(chuva, paleta, ejetor)
 
 
 
+-- Paletas: ligadas, lentas, rapidas
+-- Paletas ligadas: mantem a velocidade com ou sem a ativacao dos ejetores
+-- Paletas desligadas: ligam lentas com a ativacao dos ejetores, e desligam na desativacao
+
+-- Ejetores: ligados, desligados
+
+-- Chuva: desativada, fraca, forte
+-- Paletas acompanham a chuva =>
+--    Paletas lentas: chuva lenta
+--    Paletas rapidas: chuva forte
 
 -- [] certificacoes(pEx.: nunca a paleta vai estar desligada na chuva)
 -- [] definir estados paletas e ejetor(pEx.: )
---       ejetor e chuva influenciam nas paletas, mas nao o inverso
-
-
--- chuva desligada -> paletas desligadas
--- chuva fraca -> paletas lentas
--- chuva forte -> paletas rapidas
--- 1~4 ejetores, quando um liga, o resto liga
--- ejetores ligados, paleta lenta
