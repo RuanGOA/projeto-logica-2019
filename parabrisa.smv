@@ -1,12 +1,11 @@
 MODULE main
    VAR
-      processo : process parabrisa(chuva, paleta, ejetor);
       chuva : {desativada, fraca, forte}; 
       paletas : {desligadas, lentas, rapidas};
       ejetores : {ligados, desligados};
 
    ASSIGN
-      init(paletas) := desligada;
+      init(paletas) := desligadas;
       init(ejetores) := desligados;
       init(chuva) := desativada;
 
@@ -18,7 +17,7 @@ MODULE main
 
    -- Se as paletas estiverem desligadas ou rapidas, e a chuva estiver fraca, as paletas passam para lentas
    LTLSPEC F ((paletas = desligadas | paletas = rapidas) & chuva = fraca -> paletas = lentas);
-   -- .
+   -- ...
    
 MODULE estados(chuva, paleta, ejetor)
    ASSING
@@ -26,7 +25,7 @@ MODULE estados(chuva, paleta, ejetor)
          case
             chuva = forte : {desativada, fraca};
             chuva = fraca : {desativada, forte};
-            chuva = desligada : {desativada, forte, fraca};
+            chuva = desativada : {desativada, forte, fraca};
          esac;
 
 
