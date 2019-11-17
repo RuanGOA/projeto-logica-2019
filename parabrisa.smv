@@ -1,33 +1,52 @@
 MODULE main
    VAR
-      chuva : {desativada, fraca, forte}; 
+      chuva : {desativada, fraca, forte};
       paletas : {desligadas, lentas, rapidas};
-      ejetores : {ligados, desligados};
+      ejetores : boolean;
 
    ASSIGN
-      init(paletas) := desligadas;
-      init(ejetores) := desligados;
       init(chuva) := desativada;
+      init(paletas) := desligadas;
+      init(ejetores) := FALSE;
 
-   -- AUTOMATIZACAO
-   -- F = Sera verdade no futuro(future)
-   -- LTL = Trata o "tableau" da certificacao
-   -- Se as paletas estiverem desligadas ou lentas, e a chuva estiver forte, as paletas passam para rapidas
-   LTLSPEC F ((paletas = desligadas | paletas = lentas) & chuva = forte -> paletas = rapidas);
-
-   -- Se as paletas estiverem desligadas ou rapidas, e a chuva estiver fraca, as paletas passam para lentas
-   LTLSPEC F ((paletas = desligadas | paletas = rapidas) & chuva = fraca -> paletas = lentas);
-   -- ...
-   
-MODULE estados(chuva, paleta, ejetor)
-   ASSING
       next(chuva) :=
          case
-            chuva = forte : {desativada, fraca};
-            chuva = fraca : {desativada, forte};
-            chuva = desativada : {desativada, forte, fraca};
+            chuva = forte : {desativada, fraca, forte}; -- Se a chuva estiver forte, ela pode parar, continuar ou ficar fraca
+            chuva = fraca : {desativada, fraca, forte}; -- Se a chuva estiver fraca, ela pode parar, continuar ou ficar forte
+            chuva = desativada : {desativada, forte, fraca}; -- Se não está chovendo, pode não começar, ou começar fraco ou forte
+            TRUE : chuva;
          esac;
 
+      next(paletas) :=
+         case
+            next(chuva) = forte : rapidas; -- Se no próximo estado vai começar chover forte, as paletas são ligadas rápidas
+            next(chuva) = fraca : lentas; -- Se no próximo estado vai começar chover fraco, as paletas são ligadas lentas
+            next(ejetores) = TRUE & paletas = desligadas : {lentas}; -- Se os ejetores forem ligados e as paletas estão off, elas são ligadas
+            next(ejetores) = FALSE : desligadas; -- Se o ejetor é desligado, as paletas são desligadas
+            paletas = desligadas : {desligadas, lentas, rapidas}; -- A paleta pode desligar, ligar lenta ou rapida
+            paletas = lentas : {desligadas, lentas, rapidas}; -- A paleta pode desligar, ligar lenta ou rapida
+            paletas = rapidas : {desligadas, lentas, rapidas}; -- A paleta pode desligar, ligar lenta ou rapida
+            TRUE : paletas;
+         esac;
+
+
+      next(ejetores) :=
+          case
+             !(next(chuva) = desativada) : FALSE; -- Se no próximo estado vai começar chover, os ejetores são desligados
+             TRUE : {TRUE, FALSE}; -- Se o ejetor está ligado, ele pode continuar ligado ou desligar
+             FALSE : {TRUE, FALSE}; -- Se o ejetor está desligado, ele pode continuar desligado ou ligar
+          esac;
+
+      -- AUTOMATIZACAO
+      -- F = Sera verdade no futuro(future)
+      -- X = Sera verdade no proximo estado
+      -- G = Sera verdade globalmente
+      -- LTL = Trata o "tableau" da certificacao
+      -- Se as paletas estiverem desligadas ou lentas, e a chuva estiver forte, as paletas passam para rapidas
+      LTLSPEC X ((paletas = desligadas | paletas = lentas) & chuva = forte -> paletas = rapidas);
+
+      -- Se as paletas estiverem desligadas ou rapidas, e a chuva estiver fraca, as paletas passam para lentas
+      LTLSPEC X ((paletas = desligadas | paletas = rapidas) & chuva = fraca -> paletas = lentas);
 
 
 
@@ -37,13 +56,10 @@ MODULE estados(chuva, paleta, ejetor)
 -- Paletas: ligadas, lentas, rapidas
 -- Paletas ligadas: mantem a velocidade com ou sem a ativacao dos ejetores
 -- Paletas desligadas: ligam lentas com a ativacao dos ejetores, e desligam na desativacao
-
 -- Ejetores: ligados, desligados
-
 -- Chuva: desativada, fraca, forte
 -- Paletas acompanham a chuva =>
 --    Paletas lentas: chuva lenta
 --    Paletas rapidas: chuva forte
-
 -- [] certificacoes(pEx.: nunca a paleta vai estar desligada na chuva)
--- [] definir estados paletas e ejetor(pEx.: )
+-- [] definir estados paletas e ejetor(pEx.:)
