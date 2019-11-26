@@ -39,7 +39,7 @@ ASSIGN
             esac;
 
       next(paletas) :=
-	         case
+	      case
                   (paletas = desligadas) & (chuva = desativada) & !(ejetores) : desligadas; -- Estado inicial, sistema desligado.
                   (paletas = desligadas) & (chuva = forte) : rapidas; -- Se a chuva estiver forte, e paletas desligadas, paletas ligarão rapidas.
                   (paletas = desligadas) & ((chuva = fraca) | (ejetores)) : lentas; -- Se a chuva estiver fraca ou os ejetores estiverem (TRUE) e as paletas desligadas, as paletas ligarão lentas.
@@ -52,7 +52,7 @@ ASSIGN
                   (paletas = rapidas) & (chuva = forte) : rapidas; -- Se as paletas estiverem rapidas e a chuva estiver fraca, as paletas permancerão rapidas.
                   (paletas = rapidas) & (chuva = fraca) | (ejetores): lentas; -- Se as paletas estiverem rapidas e a chuva estiver fraca ou os ejetores (TRUE), as paletas alternarão para lentas.
                   (paletas = rapidas) & (chuva = desativada) & !(ejetores): desligadas; -- Se as paletas estiverem rapidas e a chuva desativada e os ejetores (FALSE), paletas alternarão para desligadas.
-	         esac;
+	      esac;
 
 
       next(ejetores) :=
@@ -64,13 +64,14 @@ ASSIGN
 FAIRNESS
    running
 
+-- Automatizacao:
 
--- F = Sera verdade no futuro(future).
--- X = Sera verdade no proximo estado.
--- G = Sera verdade globalmente.
+   -- F = Propoe que a condicao seja verdade no futuro.
+   -- X = Propoe que a condicao seja verdade no proximo estado.
+   -- G = Propoe que a condicao seja verdade globalmente.
 
--- AF = Propoe que a condição sempre vai ser TRUE, no futuro.
--- AG = Propoe que a condição seja sempre verdade em todos os estados.
--- AX = Propoe que a condição seja alcançada no proximo estado.
+   -- AF = Propoe que a condicao seja verdade no futuro (persistente).
+   -- AG = Propoe que a condicao seja sempre verdade, em todos os estados.
+   -- AX = Propoe que a condicao seja alcançada no proximo estado (persistente).
 
--- LTL = Trata o "tableau" da certificacao.
+   -- LTL = Trata o "tableau" da certificacao.
