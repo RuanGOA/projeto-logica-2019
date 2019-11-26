@@ -1,0 +1,76 @@
+MODULE main
+VAR
+      chuva : {desativada, fraca, forte};
+      paletas : {desligadas, lentas, rapidas};
+      ejetores : boolean;
+      proc1 : process parabrisa(chuva, paletas, ejetores);
+ASSIGN
+      init(chuva) := desativada;
+      init(paletas) := desligadas;
+      init(ejetores) := FALSE;
+
+
+      -- Verifica que não existirá um estado em que as paletas estejam desligadas enquanto chuva esteja diferente de desativada ou os ejetores estejam (TRUE).
+      SPEC AF !((!(chuva = desativada) | ejetores) & paletas = desligadas)
+
+      -- Verifica que a forca da chuva tem soberania sobre os ejetores em relacao as velocidades das paletas.
+      SPEC AF (chuva = fraca & (ejetores | !ejetores) -> (paletas = lentas))
+      SPEC AF (chuva = forte & (ejetores | !ejetores) -> paletas = rapidas)
+
+      -- Verifica que caso a chuva esteja desativada porém os ejetores estejam (TRUE) o próximo estado das paletas não poderá ser desligadas.
+      LTLSPEC F (X (chuva = desativada & ejetores) -> X !(paletas = desligadas))
+
+      -- Verifica que todos os estados são flexiveis e fora da automatizacao podem assumir qualquer valor.
+      LTLSPEC G (paletas = desligadas & !ejetores & chuva = desativada -> F ((paletas = lentas | paletas = desligadas | paletas = rapidas) & (ejetores | !ejetores) & (chuva = desativada | chuva = fraca | chuva = forte)))
+
+      -- Verifica que, se a chuva não estiver forte, em algum momento no futuro as paletas não estarão rápidas.
+      LTLSPEC G (!(chuva = forte) -> F !(paletas = rapidas))
+
+
+MODULE parabrisa(chuva, paletas, ejetores)
+VAR
+ASSIGN
+      next(chuva) :=
+            case
+                  chuva = forte : {desativada, fraca, forte}; -- Se a chuva estiver forte, ela pode parar, continuar ou ficar fraca.
+                  chuva = fraca : {desativada, fraca, forte}; -- Se a chuva estiver fraca, ela pode parar, continuar ou ficar forte.
+                  chuva = desativada : {desativada, forte, fraca}; -- Se não está chovendo, pode não começar, ou começar fraca ou forte.
+                  TRUE : chuva;
+            esac;
+
+      next(paletas) :=
+	         case
+                  (paletas = desligadas) & (chuva = desativada) & !(ejetores) : desligadas; -- Estado inicial, sistema desligado.
+                  (paletas = desligadas) & (chuva = forte) : rapidas; -- Se a chuva estiver forte, e paletas desligadas, paletas ligarão rapidas.
+                  (paletas = desligadas) & ((chuva = fraca) | (ejetores)) : lentas; -- Se a chuva estiver fraca ou os ejetores estiverem (TRUE) e as paletas desligadas, as paletas ligarão lentas.
+         
+                  (paletas = lentas) & (chuva = desativada) & !(ejetores) : desligadas; -- Se as paletas estiverem lentas e achuva desligada e os ejetores (FALSE), as paletas desligarão.
+                  (paletas = lentas) & (chuva = fraca) : lentas; -- Se as paletas estiverem lentas e a chuva estiver fraca, paletas permancerão lentas.
+                  (paletas = lentas) & (chuva = forte) : rapidas; -- Se as paletas estiverem lentas e a chuva estiver forte, paletas alternarão para rapidas.
+                  (paletas = lentas) & (ejetores) : lentas; -- Se as paletas estiverem lentas e os ejetores (TRUE), as paletas permancerão lentas.
+         
+                  (paletas = rapidas) & (chuva = forte) : rapidas; -- Se as paletas estiverem rapidas e a chuva estiver fraca, as paletas permancerão rapidas.
+                  (paletas = rapidas) & (chuva = fraca) | (ejetores): lentas; -- Se as paletas estiverem rapidas e a chuva estiver fraca ou os ejetores (TRUE), as paletas alternarão para lentas.
+                  (paletas = rapidas) & (chuva = desativada) & !(ejetores): desligadas; -- Se as paletas estiverem rapidas e a chuva desativada e os ejetores (FALSE), paletas alternarão para desligadas.
+	         esac;
+
+
+      next(ejetores) :=
+            case
+                  TRUE : {TRUE, FALSE}; -- Se os ejetores estão ligados, eles podem continuar ligados ou desligar.
+                  FALSE : {TRUE, FALSE}; -- Se os ejetores estão desligados, eles podem continuar desligados ou ligar.
+            esac;
+
+FAIRNESS
+   running
+
+
+-- F = Sera verdade no futuro(future).
+-- X = Sera verdade no proximo estado.
+-- G = Sera verdade globalmente.
+
+-- AF = Propoe que a condição sempre vai ser TRUE, no futuro.
+-- AG = Propoe que a condição seja sempre verdade em todos os estados.
+-- AX = Propoe que a condição seja alcançada no proximo estado.
+
+-- LTL = Trata o "tableau" da certificacao.
