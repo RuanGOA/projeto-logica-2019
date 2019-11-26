@@ -64,13 +64,14 @@ ASSIGN
 FAIRNESS
    running
 
+-- Automatizacao:
 
--- F = Sera verdade no futuro(future).
--- X = Sera verdade no proximo estado.
--- G = Sera verdade globalmente.
+   -- F = Sera verdade no futuro(future).
+   -- X = Sera verdade no proximo estado.
+   -- G = Sera verdade globalmente.
 
--- AF = Propoe que a condição sempre vai ser TRUE, no futuro.
--- AG = Propoe que a condição seja sempre verdade em todos os estados.
--- AX = Propoe que a condição seja alcançada no proximo estado.
+   -- AF = Propoe que a condição sempre vai ser TRUE, no futuro.
+   -- AG = Propoe que a condição seja sempre verdade em todos os estados.
+   -- AX = Propoe que a condição seja alcançada no proximo estado.
 
--- LTL = Trata o "tableau" da certificacao.
+   -- LTL = Trata o "tableau" da certificacao.
