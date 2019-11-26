@@ -51,7 +51,7 @@ sig AltaVelocidade extends Velocidade{}
 fact{
 
 	all a:Paleta |  #a.QuantidadeParabrisas = 1
-	all b:Parabrisa | #b.QuantidadePaletas = 2
+	all a:Parabrisa | #a.QuantidadePaletas = 2
 	all c,d:Paleta | (#c.QuantidadeBicos = 1 and #d.QuantidadeBicos = 1) or (#c.QuantidadeBicos = 2 and #d.QuantidadeBicos = 2)
 	all e,f:BicoEjetor | MesmoStatusBicosEjetores[e,f]
 	all g,h:Paleta | MesmaVelocidadeDasPaletas[g,h]
@@ -90,31 +90,31 @@ pred MesmaVelocidadeDasPaletas[g:Paleta, h:Paleta]{
 assert TodoParabrisaTemDuasPaletas{
 	all p:Parabrisa | #p.paletas = 2
 }
--- Verifica se todo Parabrisa possui apenas duas paletas, em 5 escopos.
-check TodoParabrisaTemDuasPaletas for 5
+-- Verifica se todo Parabrisa possui apenas duas paletas, em 10 escopos.
+check TodoParabrisaTemDuasPaletas for 10
 
 -- Afirma que toda Paleta pertence a somente um Parabrisa.
 assert TodaPaletaPertenceASomenteUmParabrisa{
 	all p:Paleta | one p.~paletas
 }
--- Verifica se toda Paleta pertence a somente um Parabrisa, em 5 escopos.
-check TodaPaletaPertenceASomenteUmParabrisa for 5
+-- Verifica se toda Paleta pertence a somente um Parabrisa, em 10 escopos.
+check TodaPaletaPertenceASomenteUmParabrisa for 10
 
 -- Afirma que toda Paleta tem a mesma Velocidade.
 assert TodaPaletaTemVelocidadeIgual{
 	all a,b:Paleta | a.velocidade = b.velocidade
 }
--- Verifica se toda Paleta tem a mesma Velocidade, em 5 escopos.
-check TodaPaletaTemVelocidadeIgual for 5
+-- Verifica se toda Paleta tem a mesma Velocidade, em 10 escopos.
+check TodaPaletaTemVelocidadeIgual for 10
 
 -- Afirma que todo Bico Ejetor tem o mesmo status.
 assert TodoBicoTemStatusIgual{
 	all a,b:BicoEjetor | a.status = b.status
 }
--- Verifica se todo Bico Ejetor tem o mesmo status, em 5 escopos.
-check TodoBicoTemStatusIgual for 5
+-- Verifica se todo Bico Ejetor tem o mesmo status, em 10 escopos.
+check TodoBicoTemStatusIgual for 10
 
 pred show[]{}
 
 -- Encontra uma instância válida para 5 escopos.
-run show for 5
+run show for 10
